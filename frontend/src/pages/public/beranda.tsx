@@ -123,6 +123,9 @@ export default function Beranda() {
           panduanSibi.map((data: any) => <ButtonWithModalImage text={data.text} imageUrl={data.imageUrl} />)
         }
       </SimpleGrid>
+      <Text fontSize={'sm'} mt={5}>
+        Sumber gambar : <a target="_blank" href="https://pmpk.kemdikbud.go.id/sibi/kosakata">pmpk.kemdikbud.go.id</a>
+      </Text>
     </MobileLayout>
   )
 }
