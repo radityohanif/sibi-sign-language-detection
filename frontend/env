@@ -1,0 +1,4 @@
+# VITE_ENV         = PROD
+VITE_ENV         = DEV
+VITE_BASE_URL    = http://localhost:5173/
+VITE_BACKEND_URL = http://localhost:8000/
