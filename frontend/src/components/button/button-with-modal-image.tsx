@@ -34,7 +34,7 @@ export default function ButtonWithModalImage(props: IProps) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Button colorScheme="telegram" variant={'outline'} onClick={onOpen}>
+      <Button color={'#6366F1'} variant={'outline'} onClick={onOpen}>
         {text}
       </Button>
     </>

@@ -27,7 +27,7 @@ export default function CardBlogPost() {
         </Box>
         <Stack>
           <Text
-            color={'telegram.500'}
+            color={'#6366F1'}
             textTransform={'uppercase'}
             fontWeight={800}
             fontSize={'sm'}

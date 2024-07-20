@@ -15,7 +15,7 @@ interface MobileLayoutProps {
 export default function MobileLayout(props: MobileLayoutProps) {
   const { children } = props
   return (
-    <Box bg={'telegram.50'}>
+    <Box bg={'#6366f124'}>
       <Container maxW={'container.sm'} px={{ sm: '0px' }}>
         <VStack
           bg={'white'}

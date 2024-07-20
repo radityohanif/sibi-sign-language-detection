@@ -3,14 +3,18 @@
 from flask import Flask, request, jsonify
 from ultralytics import YOLO
 import cv2
+from pprint import pprint
 import numpy as np
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Load a model
-model = YOLO("./model/best.pt")  
+model = YOLO("./model/best.pt")
+labels = ["I", "M", "N", "O", "P", "R", "W", "X", "Y", "Z", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "Q", "S", "T", "U", "V"]
 
-@app.route('/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 def predict():
   if 'file' not in request.files:
     return jsonify({'error': 'No file part'}), 400
@@ -36,10 +40,11 @@ def predict():
       detections.append({
         'bbox': [x1, y1, x2, y2],
         'confidence': conf,
-        'class': cls
+        'class_id': cls,
+        'class': labels[cls]
       })
 
   return jsonify(detections)
 
 if __name__ == '__main__':
-  app.run(debug=True) 
+  app.run(debug=True, port=5003) 

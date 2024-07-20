@@ -113,7 +113,7 @@ export default function Beranda() {
   return (
     <MobileLayout>
       <Heading>
-        Halo Selamat Datang Kembali
+        Halo Selamat Datang
       </Heading>
       <Text fontSize={'xl'} mb={5}>
         Yuk Kenali apa itu <b>SIBI</b> (Sistem Isyarat Bahasa Indonesi). dan bagaimana contohnya.

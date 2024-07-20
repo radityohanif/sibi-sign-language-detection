@@ -17,7 +17,7 @@ export default function Profile() {
         <HStack mb={5}>
           <Avatar
             name={'Hanif Radityo'}
-            bg={'telegram.500'}
+            bg={'#6366F1'}
             color={'white'}
             size={'lg'}
             mr={2}
