@@ -6,6 +6,7 @@ import MobileLayout from "../../layout/mobile-layout";
 export default function Deteksi() {
   const debugMode = true;
   const [label, setLabel] = useState<any>();
+  const [confidence, setConfidence] = useState<any>();
   const [response, setResponse] = useState<any>();
   const [bbox, setBbox] = useState<number[] | null>(null); // Bounding box state
   const webcamRef = useRef<any>(null);
@@ -36,12 +37,13 @@ export default function Deteksi() {
           });
           const result = await response.json();
           setResponse(JSON.stringify(result));
-          console.log({ result });
 
           if (result && result[0]) {
             setLabel(result[0].class); // Set the detected class
+            setConfidence(result[0].confidence); // Set the detected class
             setBbox(result[0].bbox); // Set the bounding box from the result
           } else {
+            setConfidence(null);
             setLabel(null);
             setBbox(null);
           }
@@ -57,9 +59,12 @@ export default function Deteksi() {
     <MobileLayout>
       <Stack marginBottom={"20px"}>
         <Heading>Deteksi Bahasa Isyarat</Heading>
-        <Stack direction="row" hidden={debugMode == false}>
-          <Badge variant="solid" colorScheme="green">
+        <Stack direction="row">
+          <Badge variant="solid" colorScheme="red" hidden={debugMode == false}>
             Debug Mode
+          </Badge>
+          <Badge variant="solid" colorScheme="green" hidden={debugMode == true}>
+            Normal Mode
           </Badge>
         </Stack>
       </Stack>
@@ -88,6 +93,7 @@ export default function Deteksi() {
       </Box>
       <Stack>
         <Text>Label: {label}</Text>
+        <Text>Confidence: {confidence}</Text>
         <Box hidden={debugMode == false}>
           <Text>Debug:</Text>
           <code>{response}</code>
