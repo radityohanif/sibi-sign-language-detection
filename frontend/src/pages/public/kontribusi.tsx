@@ -15,7 +15,7 @@ export default function Kontribusi() {
           Ingin <b>ikut berkontribusi?</b> pada pengembangan aplikasi ini. Silahkan kunjungi github repository berikut, untuk mendapatkan akses kode aplikasi ini
         </Text>
         <Link target={'_blank'} to={'https://github.com/radityohanif/sibi-sign-language-detection'}>
-          <Button colorScheme={'gray'}>
+          <Button colorScheme={'green'}>
             <Icon as={FiGithub} fontSize={'xl'} mr={2} />
             Github
           </Button>

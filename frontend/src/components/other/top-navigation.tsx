@@ -7,7 +7,7 @@ import {
 export default function TopNavigation() {
   return (
     <Stack
-      bgGradient='linear(to-l, #6366F1, #6366F1)'
+      bgGradient='linear(to-l, green.600, green.500)'
       width={'100%'}
       height={'5vh'}
       color={'white'}

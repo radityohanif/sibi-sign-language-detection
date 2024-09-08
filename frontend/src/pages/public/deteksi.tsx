@@ -1,77 +1,98 @@
-import { Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text, Badge } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
+import Webcam from "react-webcam";
 import MobileLayout from "../../layout/mobile-layout";
-import { FileUpload } from "primereact/fileupload";
-import {
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalHeader,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
-  useDisclosure,
-  Image,
-} from "@chakra-ui/react";
-import { useState } from "react";
 
 export default function Deteksi() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [isError, setIsError] = useState<boolean>(false);
+  const debugMode = true;
   const [label, setLabel] = useState<any>();
-  const [blobImage, setBlobImage] = useState<any>();
+  const [response, setResponse] = useState<any>();
+  const [bbox, setBbox] = useState<number[] | null>(null); // Bounding box state
+  const webcamRef = useRef<any>(null);
 
-  const onUpload = (e: any) => {
-    console.log("masuk")
-    try {
-      const response = JSON.parse(e.xhr.responseText);
-      setLabel(response[0].class);
-      setBlobImage(e.files[0].objectURL);
-      setIsError(false);
-      onOpen();
-    } catch (error) {
-      onOpen();
-      setIsError(true);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      captureImage();
+    }, 1000); // Capture every 100ms
+    return () => clearInterval(interval);
+  }, []);
+
+  const captureImage = async () => {
+    if (webcamRef.current) {
+      const imageSrc = webcamRef.current.getScreenshot();
+
+      if (imageSrc) {
+        // Convert the base64 image to a Blob
+        const blob = await fetch(imageSrc).then((res) => res.blob());
+
+        // Create a FormData object
+        const formData = new FormData();
+        formData.append("file", blob, "webcam_image.jpg"); // 'file' matches the key used in your backend, and 'webcam_image.jpg' is a filename
+
+        try {
+          const response = await fetch("http://127.0.0.1:5003/api/predict", {
+            method: "POST",
+            body: formData, // Send the FormData containing the image
+          });
+          const result = await response.json();
+          setResponse(JSON.stringify(result));
+          console.log({ result });
+
+          if (result && result[0]) {
+            setLabel(result[0].class); // Set the detected class
+            setBbox(result[0].bbox); // Set the bounding box from the result
+          } else {
+            setLabel(null);
+            setBbox(null);
+          }
+        } catch (error) {
+          alert("Terjadi kesalahan pada aplikasi");
+          console.error({ error });
+        }
+      }
     }
   };
 
   return (
     <MobileLayout>
-      <Heading marginBottom={"20px"}>Deteksi</Heading>
-      <FileUpload
-        name="file"
-        onUpload={onUpload}
-        url={"http://127.0.0.1:5003/api/predict"}
-        accept="image/*"
-        maxFileSize={1000000}
-        emptyTemplate={<p className="m-0">Silahkan Upload Gambar Anda disini</p>}
-      />
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          {isError ? (
-            <>
-              <ModalHeader>Bahasa Isyarat Tidak Terdeteksi</ModalHeader>
-              <ModalCloseButton />
-            </>
-          ) : (
-            <>
-              <ModalHeader>Hasil Deteksi</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Text>
-                  Teredeteksi Bahasa Isyarat Huruf <b>{label}</b> 
-                  <Image src={blobImage} />
-                </Text>
-              </ModalBody>
-            </>
-          )}
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <Stack marginBottom={"20px"}>
+        <Heading>Deteksi Bahasa Isyarat</Heading>
+        <Stack direction="row" hidden={debugMode == false}>
+          <Badge variant="solid" colorScheme="green">
+            Debug Mode
+          </Badge>
+        </Stack>
+      </Stack>
+      <Box position="relative" width="100%" height="auto" marginBottom={"20px"}>
+        <Webcam
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+        {/* Bounding Box Overlay */}
+        {bbox && (
+          <Box
+            position="absolute"
+            border="2px solid red"
+            left={`${bbox[0]}px`}
+            top={`${bbox[1]}px`}
+            width={`${bbox[2] - bbox[0]}px`}
+            height={`${bbox[3] - bbox[1]}px`}
+          ></Box>
+        )}
+      </Box>
+      <Stack>
+        <Text>Label: {label}</Text>
+        <Box hidden={debugMode == false}>
+          <Text>Debug:</Text>
+          <code>{response}</code>
+        </Box>
+      </Stack>
     </MobileLayout>
   );
 }

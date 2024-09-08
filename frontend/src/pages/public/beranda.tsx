@@ -116,7 +116,7 @@ export default function Beranda() {
         Halo Selamat Datang
       </Heading>
       <Text fontSize={'xl'} mb={5}>
-        Yuk Kenali apa itu <b>SIBI</b> (Sistem Isyarat Bahasa Indonesi). dan bagaimana contohnya.
+        Yuk Kenali apa itu <b>SIBI</b> (Sistem Isyarat Bahasa Indonesia). dan bagaimana contohnya.
       </Text>
       <SimpleGrid columns={2} spacing={5}>
         {
