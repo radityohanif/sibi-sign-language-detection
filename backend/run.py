@@ -12,7 +12,34 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Load a model
 model = YOLO("./model/best.pt")
-labels = ["I", "M", "N", "O", "P", "R", "W", "X", "Y", "Z", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "Q", "S", "T", "U", "V"]
+labels = [
+  "U",
+  "Y",
+  "H",
+  "O",
+  "C",
+  "Z",
+  "I",
+  "D",
+  "J",
+  "G",
+  "T",
+  "B",
+  "L",
+  "P",
+  "N",
+  "S",
+  "X",
+  "K",
+  "M",
+  "V",
+  "Q",
+  "A",
+  "R",
+  "F",
+  "E",
+  "W",
+]
 
 @app.route('/api/predict', methods=['POST'])
 def predict():

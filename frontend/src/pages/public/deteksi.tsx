@@ -1,15 +1,26 @@
-import { Box, Heading, Stack, Text, Badge } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text, Badge, Button } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import MobileLayout from "../../layout/mobile-layout";
 
 export default function Deteksi() {
-  const debugMode = true;
+  const debugMode: any = false;
+  const [words, setWords] = useState<any>([]);
   const [label, setLabel] = useState<any>();
   const [confidence, setConfidence] = useState<any>();
   const [response, setResponse] = useState<any>();
   const [bbox, setBbox] = useState<number[] | null>(null); // Bounding box state
   const webcamRef = useRef<any>(null);
+
+  const addWord = (newWord: string) => {
+    setWords((prevWords: string[]) => {
+      // Cek apakah elemen terakhir dari array sama dengan newWord
+      if (prevWords[prevWords.length - 1] !== newWord) {
+        return [...prevWords, newWord];
+      }
+      return prevWords; // Jika sama, kembalikan array lama tanpa perubahan
+    });
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -42,9 +53,10 @@ export default function Deteksi() {
             setLabel(result[0].class); // Set the detected class
             setConfidence(result[0].confidence); // Set the detected class
             setBbox(result[0].bbox); // Set the bounding box from the result
+            addWord(result[0].class);
           } else {
-            setConfidence(null);
-            setLabel(null);
+            // setConfidence(null);
+            // setLabel(null);
             setBbox(null);
           }
         } catch (error) {
@@ -58,7 +70,11 @@ export default function Deteksi() {
   return (
     <MobileLayout>
       <Stack marginBottom={"20px"}>
-        <Heading>Deteksi Bahasa Isyarat</Heading>
+        <Heading>
+          {words.map((word: any) => {
+            return word;
+          })}
+        </Heading>
         <Stack direction="row">
           <Badge variant="solid" colorScheme="red" hidden={debugMode == false}>
             Debug Mode
@@ -91,7 +107,8 @@ export default function Deteksi() {
           ></Box>
         )}
       </Box>
-      <Stack>
+      <Stack gap={5}>
+        <Button colorScheme="red" variant={'outline'} onClick={() => setWords([])}>Reset</Button>
         <Text>Label: {label}</Text>
         <Text>Confidence: {confidence}</Text>
         <Box hidden={debugMode == false}>
